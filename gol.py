@@ -22,9 +22,10 @@ class Life:
         return
 
     def getNumLiveNeighbours(self, row, col):
-        neighbour_coords = [(i, j) for i in range(row-1, row+2) for j in range(col-1, col+2)
-                            if not (i == row and j == col or i > self.rows - 1 or j > self.cols - 1) and
-                            i >= 0 and j >= 0]
+        # use modular arithmetic to implement periodic boundary conditions (-1 maps to n-1)
+        neighbour_coords = [(i % self.rows, j % self.cols) for i in range(row-1, row+2) for j in range(col-1, col+2)
+                            if not (i == row and j == col or i > self.rows or j > self.cols) and
+                            i >= -1 and j >= -1]
         return sum([int(self.isAlive(*coords)) for coords in neighbour_coords])
 
     def alive_next_step(self, row, col):
