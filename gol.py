@@ -1,6 +1,3 @@
-# https://github.com/afrozenator/ai/blob/master/cs221/python-tutorial/gameoflife/part1/life.py
-
-
 def createEmptyGrid(rows, cols):
     return [[{'alive': False} for j in range(cols)] for i in range(rows)]
 
@@ -12,6 +9,7 @@ class Life:
     def __init__(self, board):
         # board is going to be a list of lists of dicts
         # [[{}, {}, {}], [{}, {}, {}]] has two row and three cols
+        # could have a Cell class - self.grid = [[Cell(False) for j in range(cols)] for i in range(rows)]
         self.rows = len(board)
         self.cols = len(board[0])
         self.grid = board
@@ -29,5 +27,17 @@ class Life:
                             i >= 0 and j >= 0]
         return sum([int(self.isAlive(*coords)) for coords in neighbour_coords])
 
+    def alive_next_step(self, row, col):
+        tf = self.isAlive(row, col)
+        live_neighbour_count = self.getNumLiveNeighbours(row, col)
+        if tf:
+            return live_neighbour_count in [2, 3]
+        else:
+            return live_neighbour_count == 3
+
     def runTimeStep(self):
-        pass
+        # in place: for row_index, row in enumerate(self.grid): for col_index, col in enumerate(row): setAlive(row_index, col_index, alive_next_step(row_index, col_index))
+        self.grid = [[{'alive': self.alive_next_step(row_index, col_index)}
+                     for col_index, col in enumerate(row)]
+                     for row_index, row in enumerate(self.grid)]
+        return
